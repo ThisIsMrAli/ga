@@ -8,7 +8,7 @@ class GA {
     generationCount = 0;
     crossOverP = 0;
     mutationP = 0;
-    constructor(inputCount, population, generationCount, logic, decimal, crossOverP, mutationP) {
+    constructor(inputCount,logic,decimal,population ,generationCount, crossOverP, mutationP) {
         this.generateGenomCount(inputCount, decimal);
         for (let i = 0; i < population; i++)
             this.chPopulations.push(this.generateChrom());
