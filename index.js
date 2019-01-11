@@ -101,16 +101,17 @@ class GA {
                     }
                 }
             }
+            console.log(this.chPopulations.length, this.ng.length);
             this.chPopulations = [...this.ng];
             this.ng.length = 0;
             //mutation
             for (var i = 0; i < this.chPopulations.length; i++) {
                 for (var j = 0; j < this.GenomCounts; j++) {
-                    if (Math.random() > this.mutationP) {
+                    if (Math.random() < this.mutationP) {
                         this.chPopulations[i] = this.chPopulations[i].substr(0, j) + this.mutation(this.chPopulations[i][j]); + this.chPopulations[i].substr(j + 1);
                     }
                 }
-                if (Math.random() > this.crossOverP) {
+                if (Math.random() < this.crossOverP) {
                     const i1 = this.selectRandomIndex;
                     const i2 = this.selectRandomIndex;
                     const ch1 = this.chPopulations[i1];
@@ -138,7 +139,7 @@ class GA {
                 max.answer = p;
                 max.inputs = results;
             }
-            if(!max.all) max.all = [];
+            if (!max.all) max.all = [];
             max.all.push({ answer: p, inputs: results });
             results = [];
         }
@@ -146,6 +147,7 @@ class GA {
     }
 
     crossOver(c1, c2) {
+        console.log('c')
         let point = Math.ceil(Math.random() * c1.length);
         let t1 = c1.substr(point);
         let t2 = c2.substr(point);
@@ -155,6 +157,7 @@ class GA {
     }
 
     mutation(c1) {
+        console.log('m');
         return c1 == '1' ? '0' : '1';
     }
 
