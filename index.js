@@ -118,12 +118,10 @@ class GA {
                     const crossovered = this.crossOver(ch1, ch2);
                     this.chPopulations[i1] = crossovered[0];
                     this.chPopulations[i2] = crossovered[1];
-
-
                 }
             }
         }
-        var max = -10000;
+        var max;
         // show data
         for (var i = 0; i < this.chPopulations.length; i++) {
             var results = [];
@@ -135,13 +133,16 @@ class GA {
                 results.push(this.binReal(arg, this.inputCount[j]));
             }
             let p = this.logicFunc.call(this, ...results);
-            if (p > max) max = p;
-            console.log(`for ${JSON.stringify(results)} Result is: `, p);
+            if (max == undefined || p > max.answer) {
+                max.answer = p;
+                max.inputs = results;
+            }
+            max.all.push({answer: p, inputs: results});
             results = [];
         }
-        console.log('Max Value is ' + max);
-
+        return max;
     }
+
     crossOver(c1, c2) {
         let point = Math.ceil(Math.random() * c1.length);
         let t1 = c1.substr(point);
