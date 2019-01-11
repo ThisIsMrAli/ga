@@ -37,15 +37,15 @@ class GA {
     }
 
     generateGenomCount(inputCount, decimal) {
-        var total = 0;
+        let total = 0;
         inputCount.forEach((item, i) => {
             total += this.population(inputCount, decimal, i);
         });
         this.GenomCounts = total;
     }
     generateChrom() {
-        var str = "";
-        for (var i = 0; i < this.GenomCounts; i++)
+        let str = "";
+        for (let i = 0; i < this.GenomCounts; i++)
             str += Math.random() > 0.5 ? '1' : '0';
         return str;
     }
@@ -64,51 +64,44 @@ class GA {
         }
         return dec;
     }
-    eval(gc = 0) {
-        for (var k = 0; k < this.generationCount; k++) {
-            var innerChRanges = this.inputCount.map((item, index) => {
-                return this.population(this.inputCount, this.dec, index);
-            });
+    eval() {
+        for (let k = 0; k < this.generationCount; k++) {
             let sum = 0;
             let probablies = [];
             let qprobables = [];
             for (let i = 0; i < this.chPopulations.length; i++) {
-                var results = [];
-                var ch = this.chPopulations[i];
-                let start = 0;
-                for (var j = 0; j < innerChRanges.length; j++) {
-                    let arg = ch.substr(start, innerChRanges[j]);
-                    start = innerChRanges[j];
-                    results.push(this.binReal(arg, this.inputCount[j]));
-                }
+                let results = [];
+                let ch = this.chPopulations[i];
+                results = this.converetChToDecimals(ch);
                 let p = this.logicFunc.call(this, ...results);
                 probablies.push(p);
                 sum += p;
                 results = [];
             }
             for (let i = 0; i < this.chPopulations.length; i++) {
-                probablies[i] /= sum;
+                probablies[i] = sum == 0 ? 0: probablies[i]/sum;
                 qprobables[i] = 0;
-                for (let j = 0; j <= i; j++)
+                for (let j = 0; j <= i; j++) {
                     qprobables[i] += probablies[j];
+                }
                 const rand = Math.random();
                 if (rand < qprobables[0]) this.ng.push(this.chPopulations[0]);
                 for (let j = 0; j < this.chPopulations.length; j++) {
-                    if (rand > qprobables[j]) {
+
+                    if (rand >= qprobables[j]) {
                         let selected = j + 1;
                         this.ng.push(this.chPopulations[selected]);
                         break;
                     }
                 }
             }
-            console.log(this.chPopulations.length, this.ng.length);
             this.chPopulations = [...this.ng];
-            this.ng.length = 0;
+            this.ng = [];
             //mutation
-            for (var i = 0; i < this.chPopulations.length; i++) {
-                for (var j = 0; j < this.GenomCounts; j++) {
+            for (let i = 0; i < this.chPopulations.length; i++) {
+                for (let j = 0; j < this.GenomCounts; j++) {
                     if (Math.random() < this.mutationP) {
-                        this.chPopulations[i] = this.chPopulations[i].substr(0, j) + this.mutation(this.chPopulations[i][j]); + this.chPopulations[i].substr(j + 1);
+                        this.chPopulations[i] = this.chPopulations[i].substr(0, j) + this.mutation(this.chPopulations[i][j]) + this.chPopulations[i].substr(j + 1);
                     }
                 }
                 if (Math.random() < this.crossOverP) {
@@ -122,24 +115,21 @@ class GA {
                 }
             }
         }
-        var max;
+        let max = {
+            all: [],
+            answer: null,
+            inputs: []
+        };
         // show data
-        for (var i = 0; i < this.chPopulations.length; i++) {
-            var results = [];
-            var ch = this.chPopulations[i];
-            let start = 0;
-            for (var j = 0; j < innerChRanges.length; j++) {
-                let arg = ch.substr(start, innerChRanges[j]);
-                start = innerChRanges[j];
-                results.push(this.binReal(arg, this.inputCount[j]));
-            }
+        for (let i = 0; i < this.chPopulations.length; i++) {
+            let results = [];
+            let ch = this.chPopulations[i];
+            results = this.converetChToDecimals(ch);
             let p = this.logicFunc.call(this, ...results);
-            if (max == undefined || p > max.answer) {
-                max = {};
+            if (max.answer == null || p > max.answer) {
                 max.answer = p;
                 max.inputs = results;
             }
-            if (!max.all) max.all = [];
             max.all.push({ answer: p, inputs: results });
             results = [];
         }
@@ -147,7 +137,6 @@ class GA {
     }
 
     crossOver(c1, c2) {
-        console.log('c')
         let point = Math.ceil(Math.random() * c1.length);
         let t1 = c1.substr(point);
         let t2 = c2.substr(point);
@@ -157,12 +146,25 @@ class GA {
     }
 
     mutation(c1) {
-        console.log('m');
         return c1 == '1' ? '0' : '1';
     }
 
     get selectRandomIndex() {
         return Math.ceil(Math.random() * this.chPopulations.length - 1);
+    }
+
+    converetChToDecimals(ch) {
+        let result = [];
+        let start = 0;
+        let innerChRanges = this.inputCount.map((item, index) => {
+            return this.population(this.inputCount, this.dec, index);
+        });
+        for (let j = 0; j < innerChRanges.length; j++) {
+            let arg = ch.substr(start, innerChRanges[j]);
+            start += innerChRanges[j];
+            result.push(this.binReal(arg, this.inputCount[j]));
+        }
+        return result;
     }
 
 
