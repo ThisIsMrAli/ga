@@ -26,14 +26,14 @@ class GA {
         this.mutationP = mutationP;
     }
 
-    setPopulation(value){
+    setPopulation(value) {
         this.chPopulations = [];
-        for (let i = 0; i < population; i++)
+        for (let i = 0; i < value; i++)
             this.chPopulations.push(this.generateChrom());
     }
 
-    setGenerationCount(value){
-        this.generationCount = generationCount;
+    setGenerationCount(value) {
+        this.generationCount = value;
     }
 
     generateGenomCount(inputCount, decimal) {
