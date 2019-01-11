@@ -134,10 +134,12 @@ class GA {
             }
             let p = this.logicFunc.call(this, ...results);
             if (max == undefined || p > max.answer) {
+                max = {};
                 max.answer = p;
                 max.inputs = results;
             }
-            max.all.push({answer: p, inputs: results});
+            if(!max.all) max.all = [];
+            max.all.push({ answer: p, inputs: results });
             results = [];
         }
         return max;
