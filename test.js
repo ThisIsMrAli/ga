@@ -52,10 +52,13 @@ while (true) {
                 g2.setCrossOverP(pc[j]);
                 g2.setMutaionP(pm[k]);
                 let eval = g2.eval();
-                let a = [eval.answer, eval.inputs, generations[i], pc[j], pm[k]];
-                max = a;
-                console.log(a)
+                // let a = [eval.answer, eval.inputs, generations[i], pc[j], pm[k]];
+                // max = a;
+                // console.log(a)
                 if (eval.answer === 1) {
+                    let a = [eval.answer, eval.inputs, generations[i], pc[j], pm[k]];
+                    max = a;
+                    console.log(a)
                     console.log('***************************');
                     console.log(`Answer is 1 for ${JSON.stringify(eval.inputs)}`);
                     console.log('***************************');
