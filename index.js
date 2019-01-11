@@ -10,14 +10,23 @@ class GA {
     mutationP = 0;
     constructor(inputCount,logic,decimal,population ,generationCount, crossOverP, mutationP) {
         this.generateGenomCount(inputCount, decimal);
-        for (let i = 0; i < population; i++)
-            this.chPopulations.push(this.generateChrom());
+        setPopulation(population);
         this.logicFunc = logic;
         this.inputCount = inputCount;
         this.dec = decimal;
-        this.generationCount = generationCount;
+        setGenerationCount(generationCount);
         this.crossOverP = crossOverP;
         this.mutationP = mutationP;
+    }
+
+    setPopulation(value){
+        this.chPopulations = [];
+        for (let i = 0; i < population; i++)
+            this.chPopulations.push(this.generateChrom());
+    }
+
+    setGenerationCount(value){
+        this.generationCount = generationCount;
     }
 
     generateGenomCount(inputCount, decimal) {
