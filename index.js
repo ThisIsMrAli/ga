@@ -8,14 +8,21 @@ class GA {
     generationCount = 0;
     crossOverP = 0;
     mutationP = 0;
-    constructor(inputCount,logic,decimal,population ,generationCount, crossOverP, mutationP) {
+    constructor(inputCount, logic, decimal = 0, population, generationCount, crossOverP, mutationP) {
         this.generateGenomCount(inputCount, decimal);
         setPopulation(population);
         this.logicFunc = logic;
         this.inputCount = inputCount;
         this.dec = decimal;
         setGenerationCount(generationCount);
+        this.generationCount = generationCount;
+        this.setCrossOverP(crossOverP);
+        this.setMutaionP(mutationP);
+    }
+    setCrossOverP(crossOverP) {
         this.crossOverP = crossOverP;
+    }
+    setMutaionP(mutationP) {
         this.mutationP = mutationP;
     }
 

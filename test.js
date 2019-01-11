@@ -7,4 +7,5 @@ var g = new GA([[-3, 12.1], [4.1, 5.8]], l1, 5, 100, 1000, 0.2, 0.05);
 //var g2 = new GA([[0, 7], [0, 7], [0, 7], [0, 7], [0, 7], [0, 7], [0, 7], [0, 7]], 100,1000, () => { }, 0);
 //var e = g2.generateChrom().substr(0, 3);
 //console.log(e,g2.binDec(e),g2.binReal(e,[0,7]));
-console.log(g.eval())
+console.log(g.eval());
+console.log(g.chPopulations);
