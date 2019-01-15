@@ -2,14 +2,18 @@ export default class GA {
     GenomCounts = 0;
     chPopulations = [];
     private ng = [];
-     logicFunc;
+    logicFunc;
     inputCount = [];
     dec = 0;
     generationCount = 0;
     crossOverP = 0;
     mutationP = 0;
-    constructor(inputCount, logic, decimal = 0, population, generationCount, crossOverP, mutationP) {
+    initChromosome:String = "";
+    position:Number = 0;
+    constructor(inputCount, logic, decimal = 0, population, generationCount, crossOverP, mutationP, initChromosome:String, position:Number) {
         this.generateGenomCount(inputCount, decimal);
+        this.setInitChromosome(initChromosome);
+        this.setPosition(position);
         this.setPopulation(population);
         this.logicFunc = logic;
         this.inputCount = inputCount;
@@ -44,10 +48,10 @@ export default class GA {
         this.GenomCounts = total;
     }
     generateChrom() {
-        let str = "";
+        let str:String = "";
         for (let i = 0; i < this.GenomCounts; i++)
             str += Math.random() > 0.5 ? '1' : '0';
-        return str;
+        return manipulateChromosome(str);
     }
     population(inputCount, decimal, inputIndex) {
         return Math.ceil(Math.log2((inputCount[inputIndex][1] - inputCount[inputIndex][0]) * (Math.pow(10, decimal))));
@@ -175,6 +179,23 @@ export default class GA {
     getChResult(ch){
        return this.eval(...this.converetChToDecimals(ch));
     }
-
-
+    setInitChromosome(n:String){
+        this.initChromosome = n;
+    }
+    setPosition(n:Number){
+        this.position = n;
+    }
+    manipulateChromosome(str:String){
+        let temp:String = "";
+        if(!this.initChromosome.length)
+            return str;
+        if(!this.position)
+            temp = this.initChromosome;
+        else if(this.position){
+            temp += str.substr(0, this.position);
+            temp += this.initChromosome;
+        }
+        temp += str.substr(this.position + this.initChromosome.length);
+        return temp;
+    }
 }
