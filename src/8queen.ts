@@ -1,7 +1,4 @@
 import GA from './index';
-const l1 = (x1, x2) => {
-    return 21.5 + x1 * Math.sin(4 * Math.PI * x1) - x2 * Math.sin(20 * Math.PI * x2);
-}
 const l2 = (x0, x1, x2, x3, x4, x5, x6, x7) => {
     const args = [x0, x1, x2, x3, x4, x5, x6, x7];
     let counter = 0;
@@ -66,11 +63,3 @@ while (true) {
 }
 
 console.log(l2(4, 6, 0, 2, 7, 5, 3, 1))
-
-
-
-
-
-var g = new GA([[-3, 12.1], [4.1, 5.8]], l1, 5, 100, 1000, 0.2, 0.05);
-
-console.log(g.eval());
