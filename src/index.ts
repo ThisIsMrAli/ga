@@ -51,7 +51,7 @@ export default class GA {
         let str:String = "";
         for (let i = 0; i < this.GenomCounts; i++)
             str += Math.random() > 0.5 ? '1' : '0';
-        return manipulateChromosome(str);
+        return this.manipulateChromosome(str);
     }
     population(inputCount, decimal, inputIndex) {
         return Math.ceil(Math.log2((inputCount[inputIndex][1] - inputCount[inputIndex][0]) * (Math.pow(10, decimal))));
