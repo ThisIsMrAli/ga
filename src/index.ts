@@ -101,15 +101,16 @@ export default class GA {
             }
             this.chPopulations = [...this.ng];
             this.ng = [];
-            //mutation
+            /* determining mutation and crossover operators in action with restriction of inital sub-chromosome */
             for (let i = 0; i < this.chPopulations.length; i++) {
+                /* mutation */
                 for (let j = 0; j < this.GenomCounts; j++) {
-                    if (Math.random() < this.mutationP) {
-                        this.chPopulations[i] = this.chPopulations[i].substr(0, j) + this.mutation(this.chPopulations[i][j]) + this.chPopulations[i].substr(j + 1);
-
+                    if (j < this.position || j >= ( this.position + this.initChromosome.length ) && Math.random() < this.mutationP) {
+                        this.chPopulations[i] = this.mutation(this.chPopulations[i], j);
                     }
                 }
-                if (Math.random() < this.crossOverP) {
+                /* crossover */
+                if (i < this.position || i >= ( this.position + this.initChromosome.length ) && Math.random() < this.crossOverP) {
                     const i1 = this.selectRandomIndex;
                     const i2 = this.selectRandomIndex;
                     const ch1 = this.chPopulations[i1];
@@ -142,21 +143,16 @@ export default class GA {
     }
 
     crossOver(c1, c2) {
-       // const defVal1 = this.logicFunc.call(this, ...this.converetChToDecimals(c1));
-       // const defVal2 = this.logicFunc.call(this, ...this.converetChToDecimals(c2));
         let point = Math.ceil(Math.random() * c1.length);
         let t1 = c1.substr(point);
         let t2 = c2.substr(point);
         let d1 = c1.substr(0, point) + t2;
         let d2 = c2.substr(0, point) + t1;
-        // const newVal1 = this.logicFunc.call(this, ...this.converetChToDecimals(d1))
-        // const newVal2 = this.logicFunc.call(this, ...this.converetChToDecimals(d2));
-        // if (newVal1 >= defVal1 && newVal2>= defVal2) return [d1, d2];
         return [d1,d2];
     }
 
-    mutation(c1) {
-        return c1 == '1' ? '0' : '1';
+    mutation(str, j) {
+        return str.substr(0, j) + (str[j] == '1' ? '0' : '1') + str.substr(j + 1);
     }
 
     get selectRandomIndex() {
