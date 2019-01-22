@@ -11,12 +11,12 @@ export default class GA {
     initChromosome:String = "";
     position:Number = 0;
     constructor(inputCount, logic, decimal = 0, population, generationCount, crossOverP, mutationP, initChromosome:String, position:Number) {
-        this.generateGenomCount(inputCount, decimal);
+        this.inputCount = inputCount;
+        this.generateGenomCount(decimal);
         this.setInitChromosome(initChromosome);
         this.setPosition(position);
         this.setPopulation(population);
         this.logicFunc = logic;
-        this.inputCount = inputCount;
         this.dec = decimal;
         this.setGenerationCount(generationCount);
         this.generationCount = generationCount;
@@ -40,10 +40,10 @@ export default class GA {
         this.generationCount = value;
     }
 
-    generateGenomCount(inputCount, decimal) {
+    generateGenomCount(decimal) {
         let total = 0;
-        inputCount.forEach((item, i) => {
-            total += this.population(inputCount, decimal, i);
+        this.inputCount.forEach((item, i) => {
+            total += this.population(decimal, i);
         });
         this.GenomCounts = total;
     }
@@ -53,8 +53,8 @@ export default class GA {
             str += Math.random() > 0.5 ? '1' : '0';
         return this.manipulateChromosome(str);
     }
-    population(inputCount, decimal, inputIndex) {
-        return Math.ceil(Math.log2((inputCount[inputIndex][1] - inputCount[inputIndex][0]) * (Math.pow(10, decimal))));
+    population(decimal, inputIndex) {
+        return Math.ceil(Math.log2((this.inputCount[inputIndex][1] - this.inputCount[inputIndex][0]) * (Math.pow(10, decimal))));
     }
     binReal(ch, ranges) {
         return ranges[0] + this.binDec(ch) * (ranges[1] - ranges[0]) / (Math.pow(2, ch.length) - 1);
@@ -163,7 +163,7 @@ export default class GA {
         let result = [];
         let start = 0;
         let innerChRanges = this.inputCount.map((item, index) => {
-            return this.population(this.inputCount, this.dec, index);
+            return this.population(this.dec, index);
         });
         for (let j = 0; j < innerChRanges.length; j++) {
             let arg = ch.substr(start, innerChRanges[j]);
@@ -180,6 +180,9 @@ export default class GA {
     }
     setPosition(n:Number){
         this.position = n;
+    }
+    setInputs(arr){
+        this.inputCount = arr;
     }
     manipulateChromosome(str:String){
         let temp:String = "";
