@@ -2,11 +2,6 @@ import GA from './index';
 
 class Think {
     round;
-
-    constructor(round){
-        this.round = round;
-    }
-
     mapthink(){
         let round = 0;
         let index = [];
@@ -43,40 +38,74 @@ class Think {
     }
 
     run(){
-        let initch = "";
-        /* provide all domains */
-        let domain = []; /* container */
-        let n = 2 * 9; /* 9 cells include 2 properties as row and col */
-        for(let i = 0; i < n; i++)
-            domain.push([0, 2]); /* 00, 01, 10. add it 18 times to container as domain */
-        let ga = new GA(domain, this.map, 0, 100, 600, 0.4, 0.3, initch, 0);
         let bestInput;
         let countRound = 0;
-        while(true){
-            if(round){
+        this.round = parseInt(prompt("cpu or human first (0/1)"));
+        let initch = "";
+        let domain = [[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3]];
+        let g = new GA(domain, this.mapthink, 0, 100, 400, 0.15, 0.3, initch, 0);
+        let win = -1;
+        let capacity = 3;
+        let icapacity = 0;
+        let game = new TicTacToe();
+        while(win == -1){
+            if(this.round){
                 let cell = prompt("Which do you insert symbol at Row and Col");
                 let row = parseInt(cell.split(',')[0]);
                 let col = parseInt(cell.split(',')[1]);
-                initch += decBin(row) + decBin(col);
-                round = !round;
-                countRound += 1;
+                initch += this.decBin(row) + this.decBin(col);
+                this.round = !this.round;
+                countRound += 2;
+                win = game.rule(this.board, 1);
             } else {
                 if(countRound){
-                    ga.setInitChromosome(initch);                
-                    while(true){
-                        let evalation = ga.eval();
-                        if(evalation.answer == 1 || evalation.answer == 0){
-                            bestInput = evalation.inputs;
+                    if(icapacity > capacity){
+                        domain.push([0,3]);
+                        domain.push([0,3]);
+                        g.setInputs(domain);
+                    }
+                    icapacity++;
+                    g.setInitChromosome(initch);
+                    let val;
+                    let ft = 20; /* final tried */
+                    let tried = 0;
+                    while (tried < ft) {
+                        console.log('Thinking...');
+                        val = g.eval();
+                        if (val.answer === 1) {
+                            bestInput = [val.inputs[countRound],val.inputs[countRound + 1]];
                             break;
                         }
+                        tried++;
                     }
+                    tried = 0;
+                    while(tried < ft){
+                        console.log('Thinking for oppenent...');
+                        val = g.eval();
+                        if(val.answer === 0){
+                            bestInput = [val.inputs[countRound],val.inputs[countRound + 1]];
+                            break;            
+                        }
+                        tried++;
+                    }        
                 } else {
-                    bestInput = [rand(), rand()];
+                    bestInput = [this.rand(), this.rand()];
                 }
-                initch += decBin(bestInput[countRound]) + decBin(bestInput[countRound]);
-                round = !round;
-            }
-        }        
+                countRound += 2;
+                initch += this.decBin(bestInput[0]) + this.decBin(bestInput[1]);
+                win = game.rule(this.board, 0);
+                this.round = !this.round;
+            }    
+        }
+        let str = "";
+        if(win == 0){
+            str = "opponent";
+        } else if(win == 1){
+            str = "win"
+        }
+        this.round = !this.round;
+        let player = this.round == 0 ? "cpu" : "human";
+        console.log(`${player}  ${str}`);
     }
 
 }
@@ -122,38 +151,5 @@ class TicTacToe {
 
 }
 
-function mapthink(){
-    let round = 0;
-    let index = [];
-    let board = [];
-    board.push([null,null,null]);
-    board.push([null,null,null]);
-    board.push([null,null,null]);
-    for(let i = 0; i < arguments.length; i += 2){
-        let c = [arguments[i],arguments[i+1]];
-        for(let j = 0; j < index.length; j++)
-            if(c[0] == 3 || c[1] == 3 || ( index[j] != undefined && index[j][0] == c[0] && index[j][1] == c[1])){
-                return false;
-            }
-        index.push(c);
-        board[c[0]][c[1]] = round;
-        round = round == 0 ? 1 : 0;
-    }
-    let game = new TicTacToe();
-    return game.rule(board, 0);
-}
-
-
-let think = new Think(0);
-let initch = "0000";
-/* provide all domains */
-let domain = [[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3]]; /* container 00, 01, 10. add it 18 times to container as domain */
-let g = new GA(domain, mapthink, 0, 100, 400, 0.15, 0.3,initch,0);
-while (true) {
-    let val = g.eval();
-    console.log('try to get best result');
-    if (val.answer === 1) {
-        console.log(val);
-        break;
-    }
-}
+let think = new Think();
+think.run();
