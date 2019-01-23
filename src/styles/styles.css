@@ -1,0 +1,16 @@
+body {
+  position: fixed;
+  align-items: center;
+  background: #a6e0bd;
+}
+
+table#tic-tac-toe {
+  display: none;
+  width: 300px;
+  height: 300px;
+}
+table#tic-tac-toe td {
+  border: 2px solid;
+}
+
+/*# sourceMappingURL=src/styles/styles.css.map */

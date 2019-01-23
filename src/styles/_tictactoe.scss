@@ -1,0 +1,10 @@
+$size: 300px;
+
+table#tic-tac-toe {
+    display: none;
+    width: $size;
+    height: $size;
+    td {
+        border: 2px solid;        
+    }
+}

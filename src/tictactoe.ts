@@ -40,7 +40,7 @@ class Think {
     run(){
         let bestInput;
         let countRound = 0;
-        this.round = parseInt(prompt("cpu or human first (0/1)"));
+        this.round = 0;
         let initch = "";
         let domain = [[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3]];
         let g = new GA(domain, this.mapthink, 0, 100, 400, 0.15, 0.3, initch, 0);
@@ -50,7 +50,7 @@ class Think {
         let game = new TicTacToe();
         while(win == -1){
             if(this.round){
-                let cell = prompt("Which do you insert symbol at Row and Col");
+                let cell = "0,0";
                 let row = parseInt(cell.split(',')[0]);
                 let col = parseInt(cell.split(',')[1]);
                 initch += this.decBin(row) + this.decBin(col);
