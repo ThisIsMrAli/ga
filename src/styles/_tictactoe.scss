@@ -1,10 +1,57 @@
 $size: 300px;
 
+@mixin font($size: 24px){
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: $size;
+    font-weight: bold;
+}
+
+@mixin bgcolor($start, $end){
+    background: -moz-linear-gradient(top, $start 0%, $end 100%);
+    background: -webkit-linear-gradient(top, $start 0%,$end 100%);
+    background: linear-gradient(to bottom, $start 0%,$end 100%);
+    border: 2px solid $end;
+}
+
 table#tic-tac-toe {
     display: none;
     width: $size;
     height: $size;
     td {
-        border: 2px solid;        
+        border: 2px solid;
+        width: $size / 3;
+        height: $size / 3;      
+        @include bgcolor(#f9c667, #f79621);
+        @include font(48px);
+        transition: 200ms;
+        &:hover {
+            @include bgcolor(#b7deed, #71ceef)
+        }
     }
+}
+
+div {
+    display: flex;
+    justify-content: center;
+}
+
+div.btn {
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 2px;
+    @include bgcolor(#f9c667, #f79621);
+    width: 100px;
+    height: 33px;
+    border-radius: 5px;
+    @include font();
+    transition: 200ms;
+    &:hover {
+        @include bgcolor(#ff3019, #cf0404);
+        color: #880707;
+    }    
+}
+
+div#message, div#restart, div#player {
+    display: none;
+    @include font();
 }

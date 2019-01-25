@@ -11,8 +11,11 @@
     <ul>
         <li><a href="./index.html">Home</a></li>
     </ul>
-    <button>CPU</button>
-    <button>Human</button>
+    <div id="select">
+        <div data-value="0" class="btn">CPU</div>
+        <div data-value="1" class="btn">Human</div>    
+    </div>
+    <div id="player" data-select="" data-icon="0"></div>
     <table id="tic-tac-toe">
         <tbody>
             <tr>
@@ -32,7 +35,9 @@
             </tr>
         </tbody>
     </table>
-    <script src="./tictactoe.ts"></script>
+    <div id="message"></div>
+    <div id="restart" class="btn">Restart</div>
+    <script src="./js/tic-tac-toe.js"></script>
 </body>
 
 </html>
