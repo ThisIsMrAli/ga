@@ -157,78 +157,90 @@ function TicTacToe() {
     }
 }
 
-var game, board;
+var player = $("div#player");
+var game = new TicTacToe();
 
-game = new TicTacToe();
-board = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-];
+$(document).on("reset", function(){
+    player.data({board: [
+        [null, null, null],
+        [null, null, null],
+        [null, null, null]
+    ]});
+    player.data("icon", 0);
+})
+
+$(document).trigger("reset", []);
 
 /* select first player */
 $("div#select > div").click(function(){
-    var player = $("div#player");
     player.data("select", parseInt($(this).data("value")));
-    $("#tic-tac-toe").trigger("showBoard", [player.data("select")]);
+    $(document).trigger("showBoard");
 });
 
 /* show board */
-$("#tic-tac-toe").on("showBoard", function(event, select){
-    $(this).show();
+$(document).on("showBoard", function(event){
+    $("#game table").show();
     $("div#select").hide();
-    $("div#player").show();
-    $(this).trigger("player", [select]);
+    player.show();
+    $(this).trigger("player");
 })
 
-$("#tic-tac-toe").on("player", function(event, select){
-    $("div#player").html(select ? "You" : "CPU");
+$(document).on("player", function(event){
+    player.html(player.data("select") ? "You" : "CPU");
+    var cell = $("#game table tr > td");
+    if(player.data("select") == 1)
+        cell.addClass("human");
+    else
+        cell.removeClass("human");
 })
 
-$("#tic-tac-toe tr > td").on("click", function(event){
-    $(this).trigger("play", [$(this), $("div#player").data("select")]);
+$("#game table tr > td").on("click", function(event){
+    if(!player.data("select"))
+        return;
+    $(this).trigger("play", [$(this), player.data("select")]);
 });
 
-$(document).on("iconO", function(event, el){
-    $("<div>O</div>").appendTo(el);
+$(document).on("icon", function(event, el){
+    $(`<div>${!player.data("icon") ? 'O' : 'X'}</div>`).appendTo(el);
 })
 
-$(document).on("iconX", function(event, el){
-    $("<div>X</div>").appendTo(el);
-})
-
-$("#tic-tac-toe tr > td").on("play", function(event, el, select){
-    var player = $("div#player");
-    $(document).trigger(`icon${!select?'O':'X'}`, el);
-    board[el.parent().index()][el.index()] = player.data("icon");
-    var rule = game.rule(board, player.data("icon"));
+$("#game table tr > td").on("play", function(event, el){
+    var row = el.parent().index();
+    var col = el.index();
+    var board = player.data("board");
+    if(board[row][col] != null){ // conflict index
+        el.addClass("error");
+        setTimeout(function(){
+            el.removeClass("error");
+        }, 1000);
+        return;
+    }
+    $(document).trigger("icon", [el, row, col]);
+    board[row][col] = player.data("icon");
+    player.data("board", board);
+    var rule = game.rule(player.data("board"), player.data("icon"));
     if(rule == 0 || rule == 1)
-        $("div#message").trigger("show", [select, rule]);
+        $("div#message").trigger("show");
     else {
         player.data("icon", player.data("icon") ? 0 : 1);
         player.data("select", player.data("select") ? 0 : 1);
-        $("#tic-tac-toe").trigger("player", [player.data("select")]);
+        $(document).trigger("player", [player.data("select")]);
     }
 })
 
 /* finish game and messaging well */
-$("div#message").on("show", function(event, select, rule){
+$("div#message").on("show", function(event){
     $(this).show();
-    $("div#restart").show();
-    var player = !select ? "CPU" : "Congratulation! YOU";
-    $(this).html(rule == 1 ? `${player} Win` : "Opponent together :)");
+    $("div#replay").show();
+    var who = !player.data("select") ? "CPU" : "Congratulation! YOU";
+    $(this).html(game.rule(player.data("board"),player.data("icon")) == 1 ? `${who} Win` : "Opponent together :)");
 })
 
-$("div#restart").click(function(){
+$("div#replay").on("click", function(){
+    $(document).trigger("reset");
     $("div#select").show();
-    $("#tic-tac-toe, div#player").hide();
+    $("#game table, div#player").hide();
     $(this).hide();
     $("div#message").hide();
-    board = [
-        [null, null, null],
-        [null, null, null],
-        [null, null, null]
-    ];
-    $("div#player").data("icon", 0);
-    $("#tic-tac-toe tr > td").empty();
+    $("#game table tr > td").empty();
 })

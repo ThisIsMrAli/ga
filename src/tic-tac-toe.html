@@ -8,35 +8,42 @@
 </head>
 
 <body>
-    <ul>
-        <li><a href="./index.html">Home</a></li>
-    </ul>
-    <div id="select">
-        <div data-value="0" class="btn">CPU</div>
-        <div data-value="1" class="btn">Human</div>    
+    <div class="container">
+        <div id="header">
+            <ul>
+                <li><a href="./index.html">Home</a></li>
+            </ul>            
+        </div>
+        <div id="game">
+            <div id="select">
+                <div data-value="0" class="btn">CPU</div>
+                <div data-value="1" class="btn">Human</div>    
+            </div>
+            <div id="player" data-select data-board data-icon></div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="message"></div>
+            <div id="replay" class="btn">REPLAY</div>            
+        </div>
+            
     </div>
-    <div id="player" data-select="" data-icon="0"></div>
-    <table id="tic-tac-toe">
-        <tbody>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-    <div id="message"></div>
-    <div id="restart" class="btn">Restart</div>
     <script src="./js/tic-tac-toe.js"></script>
 </body>
 
