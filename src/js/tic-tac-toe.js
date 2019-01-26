@@ -2,7 +2,8 @@ var $ = require("jquery");
 
 import GA from './../index';
 
-function TicTacToe() {
+function TicTacToe(round) {
+    this.round = round;
     return {
         row: function(board, round){
             for(let i = 0; i < 3; i++){
@@ -51,23 +52,25 @@ function TicTacToe() {
         },
 
         mapthink: function(){
+            let game = new TicTacToe(0);
             let round = 0;
             let index = [];
-            let board = [];
-            board.push([null,null,null]);
-            board.push([null,null,null]);
-            board.push([null,null,null]);
+            let board = [
+                [null,null,null],
+                [null,null,null],
+                [null,null,null]
+            ];
+            console.log(arguments);
             for(let i = 0; i < arguments.length; i += 2){
                 let c = [arguments[i],arguments[i+1]];
                 for(let j = 0; j < index.length; j++)
-                    if(c[0] == 3 || c[1] == 3 || (index[j] != undefined && index[j][0] == c[0] && index[j][1] == c[1])){
+                    if(c[0] == 3 || c[1] == 3 || (index[j] != undefined && index[j][0] == c[0] && index[j][1] == c[1]))
                         return -1;
-                    }
                 index.push(c);
                 board[arguments[i]][arguments[i+1]] = round;
                 round = round == 0 ? 1 : 0;
             }
-            return this.rule(board, this.round);
+            return game.rule(board, this.round);
         },
     
         decBin: function(n){
@@ -83,83 +86,63 @@ function TicTacToe() {
         rand: function(){
             return Math.floor(Math.random() * 3);
         },
+
+        convertSequence2Choromosome: function(sequence){
+            let ch = "";
+            sequence.forEach(function(v){
+                v.forEach(function(u){
+                    ch += game.decBin(u);
+                })
+            })
+            return ch;
+        },
     
-        run: function(){
-            let bestInput;
-            let countRound = 0;
-            this.round = 0;
-            let initch = "";
-            let domain = [[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3],[0,3]];
-            let g = new GA(domain, this.mapthink, 0, 100, 400, 0.15, 0.3, initch, 0);
-            let win = -1;
-            let capacity = 3;
-            let icapacity = 0;
-            let game = new TicTacToe();
-            while(win == -1){
-                if(this.round){
-                    let cell = "0,0";
-                    let row = parseInt(cell.split(',')[0]);
-                    let col = parseInt(cell.split(',')[1]);
-                    initch += this.decBin(row) + this.decBin(col);
-                    this.round = !this.round;
-                    countRound += 2;
-                    win = game.rule(this.board, 1);
-                } else {
-                    if(countRound){
-                        if(icapacity > capacity){
-                            domain.push([0,3]);
-                            domain.push([0,3]);
-                            g.setInputs(domain);
-                        }
-                        icapacity++;
-                        g.setInitChromosome(initch);
-                        let val;
-                        let ft = 20; /* final tried */
-                        let tried = 0;
-                        while (tried < ft) {
-                            console.log('Thinking...');
-                            val = g.eval();
-                            if (val.answer === 1) {
-                                bestInput = [val.inputs[countRound],val.inputs[countRound + 1]];
-                                break;
-                            }
-                            tried++;
-                        }
-                        tried = 0;
-                        while(tried < ft){
-                            console.log('Thinking for oppenent...');
-                            val = g.eval();
-                            if(val.answer === 0){
-                                bestInput = [val.inputs[countRound],val.inputs[countRound + 1]];
-                                break;            
-                            }
-                            tried++;
-                        }        
-                    } else {
-                        bestInput = [this.rand(), this.rand()];
+        run: function(sequence){
+            let game = new TicTacToe(0);
+            if(!sequence.length)
+                return [game.rand(), game.rand()];
+            let bestInput = null;
+            let domain = [
+                [0,3],[0,3],[0,3],
+                [0,3],[0,3],[0,3],
+                [0,3],[0,3],[0,3],
+                [0,3],[0,3],[0,3]
+            ];
+            let g = new GA(domain, game.mapthink, 0, 100, 400, 0.15, 0.3, game.convertSequence2Choromosome(sequence), 0);
+            for(let i = 0; i < sequence.length - 3; i++){
+                domain.push([0,3]);
+                domain.push([0,3]);
+                g.setInputs(domain);
+            }
+            console.log("CPU is thinking...");
+            let choice;
+            let index = 2 * sequence.length;
+            while(true){
+                var i = 0;
+                while(i < 20){
+                    let val = g.eval();
+                    if (val.answer){
+                        choice = [val.inputs[index],val.inputs[index + 1]];
+                        console.log(choice);
+                        return choice;
                     }
-                    countRound += 2;
-                    initch += this.decBin(bestInput[0]) + this.decBin(bestInput[1]);
-                    win = game.rule(this.board, 0);
-                    this.round = !this.round;
-                }    
+                    i++;
+                }
+                while(i < 40){
+                    val = g.eval();
+                    if(!val.answer)
+                        choice = [val.inputs[index],val.inputs[index + 1]];
+                        console.log(choice);
+                        return choice;
+                    i++;
+                }
             }
-            let str = "";
-            if(win == 0){
-                str = "opponent";
-            } else if(win == 1){
-                str = "win"
-            }
-            this.round = !this.round;
-            let player = this.round == 0 ? "cpu" : "human";
-            console.log(`${player}  ${str}`);
         }
     }
 }
 
 var player = $("div#player");
-var game = new TicTacToe();
-
+var game = new TicTacToe(0);
 $(document).on("reset", function(){
     player.data({board: [
         [null, null, null],
@@ -167,6 +150,7 @@ $(document).on("reset", function(){
         [null, null, null]
     ]});
     player.data("icon", 0);
+    player.data("sequence", []);
 })
 
 $(document).trigger("reset", []);
@@ -190,21 +174,27 @@ $(document).on("player", function(event){
     var cell = $("#game table tr > td");
     if(player.data("select") == 1)
         cell.addClass("human");
-    else
+    else {
         cell.removeClass("human");
+        $(document).trigger("cpu");
+    }
+})
+
+$(document).on("cpu", function(){
+    $(this).trigger("play", game.run(player.data("sequence")));
 })
 
 $("#game table tr > td").on("click", function(event){
     if(!player.data("select"))
         return;
-    $(this).trigger("play", [$(this).parent().index(), $(this).index()]);
+    $(document).trigger("play", [$(this).parent().index(), $(this).index()]);
 });
 
 $(document).on("icon", function(event, el){
     $(`<div>${!player.data("icon") ? 'O' : 'X'}</div>`).appendTo(el);
 })
 
-$("#game table tr > td").on("play", function(event, row, col){
+$(document).on("play", function(event, row, col){
     var el = $(`#game table tr:nth-child(${row+1}) > td:nth-child(${col+1})`);
     var board = player.data("board");
     if(board[row][col] != null){ // conflict index
@@ -214,6 +204,9 @@ $("#game table tr > td").on("play", function(event, row, col){
         }, 1000);
         return;
     }
+    var sequence = player.data("sequence");
+    sequence.push([row, col]);
+    player.data("sequence", sequence);
     $(document).trigger("icon", [el, row, col]);
     board[row][col] = player.data("icon");
     player.data("board", board);
