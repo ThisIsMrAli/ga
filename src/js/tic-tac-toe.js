@@ -197,16 +197,15 @@ $(document).on("player", function(event){
 $("#game table tr > td").on("click", function(event){
     if(!player.data("select"))
         return;
-    $(this).trigger("play", [$(this), player.data("select")]);
+    $(this).trigger("play", [$(this).parent().index(), $(this).index()]);
 });
 
 $(document).on("icon", function(event, el){
     $(`<div>${!player.data("icon") ? 'O' : 'X'}</div>`).appendTo(el);
 })
 
-$("#game table tr > td").on("play", function(event, el){
-    var row = el.parent().index();
-    var col = el.index();
+$("#game table tr > td").on("play", function(event, row, col){
+    var el = $(`#game table tr:nth-child(${row+1}) > td:nth-child(${col+1})`);
     var board = player.data("board");
     if(board[row][col] != null){ // conflict index
         el.addClass("error");
