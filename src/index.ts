@@ -10,12 +10,14 @@ export default class GA {
     mutationP = 0;
     initChromosome:String = "";
     position:Number = 0;
+    populationCount = 100;
     constructor(inputCount, logic, decimal = 0, population, generationCount, crossOverP, mutationP, initChromosome:String, position:Number) {
         this.inputCount = inputCount;
+        this.setPopulationCount(population);
         this.generateGenomCount(decimal);
         this.setInitChromosome(initChromosome);
         this.setPosition(position);
-        this.setPopulation(population);
+        this.setPopulation();
         this.logicFunc = logic;
         this.dec = decimal;
         this.setGenerationCount(generationCount);
@@ -30,10 +32,14 @@ export default class GA {
         this.mutationP = mutationP;
     }
 
-    setPopulation(value) {
+    setPopulation() {
         this.chPopulations = [];
-        for (let i = 0; i < value; i++)
+        for (let i = 0; i < this.populationCount; i++)
             this.chPopulations.push(this.generateChrom());
+    }
+
+    setPopulationCount(pop){
+        this.populationCount = pop;
     }
 
     setGenerationCount(value) {
@@ -183,6 +189,7 @@ export default class GA {
     }
     setInputs(arr){
         this.inputCount = arr;
+        this.setPopulation();
     }
     manipulateChromosome(str:String){
         let temp:String = "";

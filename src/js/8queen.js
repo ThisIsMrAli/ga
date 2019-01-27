@@ -1,4 +1,4 @@
-import GA from './index';
+import GA from './../index';
 const l2 = (x0, x1, x2, x3, x4, x5, x6, x7) => {
     const args = [x0, x1, x2, x3, x4, x5, x6, x7];
     let counter = 0;
