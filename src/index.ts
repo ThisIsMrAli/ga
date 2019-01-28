@@ -28,6 +28,7 @@ export default class GA {
     setCrossOverP(crossOverP) {
         this.crossOverP = crossOverP;
     }
+    
     setMutaionP(mutationP) {
         this.mutationP = mutationP;
     }
@@ -189,6 +190,14 @@ export default class GA {
     }
     setInputs(arr){
         this.inputCount = arr;
+        this.generateGenomCount(this.dec);
+        this.setPopulation();
+    }
+    pushDomain(subdomain, iterator){
+        for(let i = 0; i < iterator; i++){
+            this.inputCount.push(subdomain);
+        }
+        this.generateGenomCount(this.dec);
         this.setPopulation();
     }
     manipulateChromosome(str:String){

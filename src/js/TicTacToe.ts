@@ -1,28 +1,5 @@
 import GA from './../index';
 
-function mapthink() {
-    let index = [];
-    for (let i = 0; i < arguments.length; i += 2) {
-        let c = [arguments[i], arguments[i + 1]];
-        for (let j = 0; j < index.length; j++)
-            if (c[0] == 3 || c[1] == 3 || (index[j] != undefined && index[j][0] == c[0] && index[j][1] == c[1]))
-                return -1;
-        index.push(c);
-    }
-    let round = 0;
-    let board = [
-        [null, null, null],
-        [null, null, null],
-        [null, null, null]
-    ];
-    for(let i = 0; i < index.length; i++){
-        board[index[i][0]][index[i][1]] = round;
-        round = round == 0 ? 1 : 0;
-    }
-    let game = new TicTacToe(0);
-    return game.rule(board);
-}
-
 export default class TicTacToe {
     constructor(public round = 0) {}
     setRound(round) {
@@ -92,20 +69,34 @@ export default class TicTacToe {
     run(sequence:Array<number>) {
         if (!sequence.length)
             return [this.rand(), this.rand()];
-        let domain = [
-            [0, 3], [0, 3],
-            [0, 3], [0, 3],
-            [0, 3], [0, 3],
-            [0, 3], [0, 3],
-            [0, 3], [0, 3],
-            [0, 3], [0, 3],
-        ];
-        let g = new GA(domain, mapthink, 0, 100, 400, 0.15, 0.3, this.convertSequence2Choromosome(sequence), 0);
-        /*for (let i = 0; i < sequence.length - 3; i++) {
-            domain.push([0, 3]);
-            domain.push([0, 3]);
-            g.setInputs(domain);
-        }*/
+        let subChoromosome = this.convertSequence2Choromosome(sequence);
+        let g = new GA([], function () {
+            let index = [];
+            for (let i = 0; i < arguments.length; i += 2) {
+                let c = [arguments[i], arguments[i + 1]];
+                for (let j = 0; j < index.length; j++)
+                    if (c[0] == 3 || c[1] == 3 || (index[j] != undefined && index[j][0] == c[0] && index[j][1] == c[1]))
+                        return -1;
+                index.push(c);
+            }
+            let round = 0;
+            let board = [
+                [null, null, null],
+                [null, null, null],
+                [null, null, null]
+            ];
+            for(let i = 0; i < index.length; i++){
+                board[index[i][0]][index[i][1]] = round;
+                round = round == 0 ? 1 : 0;
+            }
+            let game = new TicTacToe(0);
+            return game.rule(board);
+        }, 0, 100, 400, 0.15, 0.3, subChoromosome, 0);
+        let subdomain = [0,3];
+        g.pushDomain(subdomain, 12);
+        console.log(subChoromosome.length, g.GenomCounts, g.inputCount, g.chPopulations);
+        if(subChoromosome.length == g.GenomCounts)
+            g.pushDomain(subdomain, 6);
         let index = 2 * sequence.length;
         while (true) {
             let val;
