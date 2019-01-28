@@ -3,7 +3,11 @@ import TicTacToe from './TicTacToe';
 
 var player = $("div#player");
 var game = new TicTacToe();
-
+/* game.setRound(0);
+let board = game.convertIndex2Board([[0,2],[2,2],[2,0]]);
+console.log(board);
+console.log(game.defenceIDiagonal(board));
+ */
 $(document).on("reset", function(){
     player.data({board: [
         [null, null, null],
@@ -87,8 +91,8 @@ $(document).on("play", function(event, row, col){
 $("div#message").on("show", function(event){
     $(this).show();
     $("div#replay").show();
-    var who = !player.data("select") ? "CPU" : "Congratulation! YOU";
-    $(this).html(game.rule(player.data("board"),player.data("icon")) == 1 ? `${who} Win` : "Opponent together :)");
+    var who = !player.data("select") ? "CPU" : "YOU";
+    $(this).html(game.rule(player.data("board"),player.data("icon")) == 1 ? `${who} Win` : "Opponent");
 })
 
 $("div#replay").on("click", function(){

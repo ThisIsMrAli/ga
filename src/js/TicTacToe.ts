@@ -66,36 +66,92 @@ export default class TicTacToe {
         }
         return ch;
     }
+    defenceRow(board){
+        for(let i = 0; i < 3; i++){
+            for(let j = 0; j < 3; j++){
+                if(board[i][j] == null && board[i][(j+1) % 3] == this.round && board[i][(i+2) % 3] == this.round)
+                    return [i, j];
+            }    
+        }
+        return null;
+    }
+    defenceColumnar(board){
+        for(let i = 0; i < 3; i++){
+            for(let j = 0; j < 3; j++){
+                if(board[i][j] == null && board[(i+1) % 3][j] == this.round && board[(i+2) % 3][j] == this.round)
+                    return [i, j];
+            }    
+        }
+        return null;
+    }
+    defenceDiagonal(board){
+        for(let ij = 0; ij < 3; ij++)
+            if(board[ij % 3][ij % 3] == null && board[(ij+1) % 3][(ij+1) % 3] == this.round && board[(ij+2) % 3][(ij+2) % 3] == this.round)
+                return [ij % 3, ij % 3];
+        return null;
+    }
+    /* todo below method */
+    defenceIDiagonal(board){
+        for(let ij = 0; ij < 3; ij++)
+            if(board[ij % 3][ij % 3] == null && board[(ij+1) % 3][(ij+1) % 3] == this.round && board[(ij+2) % 3][ij % 3] == this.round)
+                return [ij % 3, (ij + 2) % 3];
+        return null;
+    }
+    defence(index){
+        let board = this.convertIndex2Board(index);
+        let de = this.defenceRow(board);
+        if(de != null)
+            return de;
+        de = this.defenceColumnar(board);
+        if(de != null)
+            return de;
+        de = this.defenceDiagonal(board);
+        if(de != null)
+            return de;
+        de = this.defenceIDiagonal(board);
+        return de;
+    }
+    switchRound(){
+        this.setRound(this.round == 1 ? 0 : 1);
+    }
+    convertIndex2Board(index){
+        let round = 0;
+        let board = [
+            [null, null, null],
+            [null, null, null],
+            [null, null, null]
+        ];
+        for(let i = 0; i < index.length; i++){
+            board[index[i][0]][index[i][1]] = round;
+            round = round == 0 ? 1 : 0;
+        }
+        return board;
+    }
+    convertArguments2Index(args){
+        let index = [];
+        for (let i = 0; i < args.length; i += 2) {
+            let c = [args[i], args[i + 1]];
+            for (let j = 0; j < index.length; j++)
+                if (c[0] == 3 || c[1] == 3 || (index[j] != undefined && index[j][0] == c[0] && index[j][1] == c[1]))
+                    return -1;
+            index.push(c);
+        }
+        return index;
+    }
     run(sequence:Array<number>) {
         if (!sequence.length)
             return [this.rand(), this.rand()];
         let subChoromosome = this.convertSequence2Choromosome(sequence);
+        let de = this.defence(sequence);
+        if(de != null)
+            return de;
         let g = new GA([], function () {
-            let index = [];
-            for (let i = 0; i < arguments.length; i += 2) {
-                let c = [arguments[i], arguments[i + 1]];
-                for (let j = 0; j < index.length; j++)
-                    if (c[0] == 3 || c[1] == 3 || (index[j] != undefined && index[j][0] == c[0] && index[j][1] == c[1]))
-                        return -1;
-                index.push(c);
-            }
-            let round = 0;
-            let board = [
-                [null, null, null],
-                [null, null, null],
-                [null, null, null]
-            ];
-            for(let i = 0; i < index.length; i++){
-                board[index[i][0]][index[i][1]] = round;
-                round = round == 0 ? 1 : 0;
-            }
             let game = new TicTacToe(0);
-            return game.rule(board);
+            return game.rule(game.convertIndex2Board(game.convertArguments2Index(arguments)));
         }, 0, 100, 400, 0.15, 0.3, subChoromosome, 0);
         let subdomain = [0,3];
         g.pushDomain(subdomain, 12);
-        console.log(subChoromosome.length, g.GenomCounts, g.inputCount, g.chPopulations);
-        if(subChoromosome.length == g.GenomCounts)
+        if(subChoromosome.length == g.GenomCounts - 8)
             g.pushDomain(subdomain, 6);
         let index = 2 * sequence.length;
         while (true) {
@@ -103,12 +159,14 @@ export default class TicTacToe {
             var i = 0;
             while (i < 20) {
                 val = g.eval();
+                console.log(val.inputs.toString(),val.answer);
                 if (val.answer == 1)
                     return [val.inputs[index], val.inputs[index + 1]];
                 i++;
             }
             while (i < 40) {
                 val = g.eval();
+                console.log(val.inputs.toString(),val.answer);
                 if (val.answer == 0)
                     return [val.inputs[index], val.inputs[index + 1]];
                 i++;
