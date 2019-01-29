@@ -90,11 +90,13 @@ export default class TicTacToe {
                 return [ij % 3, ij % 3];
         return null;
     }
-    /* todo below method */
     defenceIDiagonal(board){
-        for(let ij = 0; ij < 3; ij++)
-            if(board[ij % 3][ij % 3] == null && board[(ij+1) % 3][(ij+1) % 3] == this.round && board[(ij+2) % 3][ij % 3] == this.round)
-                return [ij % 3, (ij + 2) % 3];
+        if(board[0][2] == null && board[1][1] == this.round && board[2][0] == this.round)
+            return [0, 2];
+        else if(board[1][1] == null && board[0][2] == this.round && board[2][0] == this.round)
+            return [1, 1];
+        else if(board[2][0] == null && board[0][2] == this.round && board[1][1] == this.round)
+            return [2, 0];
         return null;
     }
     defence(index){
@@ -151,7 +153,7 @@ export default class TicTacToe {
         }, 0, 100, 400, 0.15, 0.3, subChoromosome, 0);
         let subdomain = [0,3];
         g.pushDomain(subdomain, 12);
-        if(subChoromosome.length == g.GenomCounts - 8)
+        if(subChoromosome.length - 4 == g.GenomCounts)
             g.pushDomain(subdomain, 6);
         let index = 2 * sequence.length;
         while (true) {
@@ -159,14 +161,14 @@ export default class TicTacToe {
             var i = 0;
             while (i < 20) {
                 val = g.eval();
-                console.log(val.inputs.toString(),val.answer);
+                console.log(subChoromosome, subChoromosome.length, val.inputs.toString(), val.answer);
                 if (val.answer == 1)
                     return [val.inputs[index], val.inputs[index + 1]];
                 i++;
             }
             while (i < 40) {
                 val = g.eval();
-                console.log(val.inputs.toString(),val.answer);
+                console.log(subChoromosome, subChoromosome.length, val.inputs.toString(),val.answer);
                 if (val.answer == 0)
                     return [val.inputs[index], val.inputs[index + 1]];
                 i++;

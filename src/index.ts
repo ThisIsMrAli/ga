@@ -188,7 +188,7 @@ export default class GA {
     setPosition(n:Number){
         this.position = n;
     }
-    setInputs(arr){
+    initDomain(arr){
         this.inputCount = arr;
         this.generateGenomCount(this.dec);
         this.setPopulation();
