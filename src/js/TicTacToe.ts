@@ -69,7 +69,7 @@ export default class TicTacToe {
     defenceRow(board){
         for(let i = 0; i < 3; i++){
             for(let j = 0; j < 3; j++){
-                if(board[i][j] == null && board[i][(j+1) % 3] == this.round && board[i][(i+2) % 3] == this.round)
+                if(board[i][j] == null && board[i][(j+1) % 3] == this.round && board[i][(j+2) % 3] == this.round)
                     return [i, j];
             }    
         }
@@ -144,9 +144,6 @@ export default class TicTacToe {
         if (!sequence.length)
             return [this.rand(), this.rand()];
         let subChoromosome = this.convertSequence2Choromosome(sequence);
-        let de = this.defence(sequence);
-        if(de != null)
-            return de;
         let g = new GA([], function () {
             let game = new TicTacToe(0);
             return game.rule(game.convertIndex2Board(game.convertArguments2Index(arguments)));
@@ -155,24 +152,17 @@ export default class TicTacToe {
         g.pushDomain(subdomain, 12);
         if(subChoromosome.length - 4 == g.GenomCounts)
             g.pushDomain(subdomain, 6);
+        let de = this.defence(sequence);
+        if(de != null){
+            console.log(subChoromosome, subChoromosome.length);
+            return de;
+        }
         let index = 2 * sequence.length;
         while (true) {
-            let val;
-            var i = 0;
-            while (i < 20) {
-                val = g.eval();
-                console.log(subChoromosome, subChoromosome.length, val.inputs.toString(), val.answer);
-                if (val.answer == 1)
-                    return [val.inputs[index], val.inputs[index + 1]];
-                i++;
-            }
-            while (i < 40) {
-                val = g.eval();
-                console.log(subChoromosome, subChoromosome.length, val.inputs.toString(),val.answer);
-                if (val.answer == 0)
-                    return [val.inputs[index], val.inputs[index + 1]];
-                i++;
-            }
+            let val = g.eval();
+            console.log(subChoromosome, subChoromosome.length, val.inputs.toString(), val.answer);
+            if (val.answer == 1 || val.answer == 0)
+                return [val.inputs[index], val.inputs[index + 1]];
         }
     }    
 }

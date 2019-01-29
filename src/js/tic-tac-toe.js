@@ -3,11 +3,6 @@ import TicTacToe from './TicTacToe';
 
 var player = $("div#player");
 var game = new TicTacToe();
-/* game.setRound(0);
-let board = game.convertIndex2Board([[0,2],[2,2],[2,0]]);
-console.log(board);
-console.log(game.defenceIDiagonal(board));
- */
 $(document).on("reset", function(){
     player.data({board: [
         [null, null, null],
