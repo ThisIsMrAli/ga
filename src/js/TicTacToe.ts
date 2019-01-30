@@ -58,11 +58,11 @@ export default class TicTacToe {
     rand() {
         return Math.floor(Math.random() * 3);
     }
-    convertSequence2Choromosome(sequence) {
+    convertIndex2Choromosome(index) {
         let ch = "";
-        for(let i = 0; i < sequence.length; i++){
-            for(let j = 0; j < sequence[i].length; j++)
-                ch += this.decBin(sequence[i][j]);
+        for(let i = 0; i < index.length; i++){
+            for(let j = 0; j < index[i].length; j++)
+                ch += this.decBin(index[i][j]);
         }
         return ch;
     }
@@ -140,29 +140,30 @@ export default class TicTacToe {
         }
         return index;
     }
-    run(sequence:Array<number>) {
-        if (!sequence.length)
+    run(index:Array<number>) {
+        if (!index.length)
             return [this.rand(), this.rand()];
-        let subChoromosome = this.convertSequence2Choromosome(sequence);
+        let subChoromosome = this.convertIndex2Choromosome(index);
+        let thisClass = this;
         let g = new GA([], function () {
-            let game = new TicTacToe(0);
+            let game = new TicTacToe(thisClass.round);
             return game.rule(game.convertIndex2Board(game.convertArguments2Index(arguments)));
         }, 0, 100, 400, 0.15, 0.3, subChoromosome, 0);
         let subdomain = [0,3];
         g.pushDomain(subdomain, 12);
         if(subChoromosome.length - 4 == g.GenomCounts)
             g.pushDomain(subdomain, 6);
-        let de = this.defence(sequence);
+        let de = this.defence(index);
         if(de != null){
             console.log(subChoromosome, subChoromosome.length);
             return de;
         }
-        let index = 2 * sequence.length;
+        let i = 2 * index.length;
         while (true) {
             let val = g.eval();
             console.log(subChoromosome, subChoromosome.length, val.inputs.toString(), val.answer);
             if (val.answer == 1 || val.answer == 0)
-                return [val.inputs[index], val.inputs[index + 1]];
+                return [val.inputs[i], val.inputs[i + 1]];
         }
     }    
 }

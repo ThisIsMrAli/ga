@@ -10,10 +10,10 @@ $(document).on("reset", function(){
         [null, null, null]
     ]});
     player.data("icon", 0);
-    player.data("sequence", []);
+    player.data("index", []);
 })
 
-$(document).trigger("reset", []);
+$(document).trigger("reset");
 
 /* select first player */
 $("div#select > div").click(function(){
@@ -30,25 +30,27 @@ $(document).on("showBoard", function(event){
 })
 
 $(document).on("player", function(event){
-    player.html(player.data("select") ? "You" : "CPU");
+    let who = player.data("select") ? "You" : "PC";
+    who += " " + `${!player.data("icon") ? "O" : "X"}`
+    player.html(who);
     var cell = $("#game table tr > td");
     if(player.data("select") == 1)
-        cell.addClass("human");
+        cell.addClass("you");
     else {
-        cell.removeClass("human");
-        $(document).trigger("cpu");
+        cell.removeClass("you");
+        $(document).trigger("pc");
     }
 })
 
-$(document).on("cpu", function(){
-    game.setRound(0);
-    $(this).trigger("play", game.run(player.data("sequence")));
+$(document).on("pc", function(){
+    game.switchRound();
+    $(this).trigger("play", game.run(player.data("index")));
 })
 
 $("#game table tr > td").on("click", function(event){
     if(!player.data("select"))
         return;
-    game.setRound(1);
+    game.switchRound();
     $(document).trigger("play", [$(this).parent().index(), $(this).index()]);
 });
 
@@ -66,9 +68,9 @@ $(document).on("play", function(event, row, col){
         }, 1000);
         return;
     }
-    var sequence = player.data("sequence");
-    sequence.push([row, col]);
-    player.data("sequence", sequence);
+    var index = player.data("index");
+    index.push([row, col]);
+    player.data("index", index);
     $(document).trigger("icon", [el, row, col]);
     board[row][col] = player.data("icon");
     player.data("board", board);
@@ -86,7 +88,8 @@ $(document).on("play", function(event, row, col){
 $("div#message").on("show", function(event){
     $(this).show();
     $("div#replay").show();
-    var who = !player.data("select") ? "CPU" : "YOU";
+    let who = !player.data("select") ? "PC" : "You";
+    who += ":" + `${!player.data("icon") ? 'O' : 'X'}`;
     $(this).html(game.rule(player.data("board"),player.data("icon")) == 1 ? `${who} Win` : "Opponent");
 })
 
