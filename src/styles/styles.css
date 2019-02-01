@@ -1,0 +1,94 @@
+body {
+  position: fixed;
+  align-items: center;
+  background: #a6e0bd;
+}
+
+#game table {
+  display: none;
+  width: 300px;
+  height: 300px;
+}
+#game table td {
+  border: 2px solid;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  background: -moz-linear-gradient(top, #f9c667 0%, #f79621 100%) 0;
+  background: -webkit-linear-gradient(top, #f9c667 0%, #f79621 100%) 0;
+  background: linear-gradient(to bottom, #f9c667 0%, #f79621 100%) 0;
+  border: 2px solid #f79621;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 48px;
+  font-weight: bold;
+  transition: 200ms;
+  text-align: center;
+}
+#game table td.you:hover {
+  background: -moz-linear-gradient(top, #b7deed 0%, #71ceef 100%) 0;
+  background: -webkit-linear-gradient(top, #b7deed 0%, #71ceef 100%) 0;
+  background: linear-gradient(to bottom, #b7deed 0%, #71ceef 100%) 0;
+  border: 2px solid #71ceef;
+}
+
+div.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+div#select {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+div#select div {
+  display: flex;
+  justify-content: center;
+}
+
+div.btn {
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 2px;
+  background: -moz-linear-gradient(top, #f9c667 0%, #f79621 100%) 0;
+  background: -webkit-linear-gradient(top, #f9c667 0%, #f79621 100%) 0;
+  background: linear-gradient(to bottom, #f9c667 0%, #f79621 100%) 0;
+  border: 2px solid #f79621;
+  width: 100px;
+  height: 33px;
+  border-radius: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  transition: 200ms;
+}
+div.btn:hover {
+  background: -moz-linear-gradient(top, #ff3019 0%, #cf0404 100%) 0;
+  background: -webkit-linear-gradient(top, #ff3019 0%, #cf0404 100%) 0;
+  background: linear-gradient(to bottom, #ff3019 0%, #cf0404 100%) 0;
+  border: 2px solid #cf0404;
+  color: #880707;
+}
+
+.error {
+  background: -moz-linear-gradient(top, #ff3019 0%, #cf0404 100%) !important;
+  background: -webkit-linear-gradient(top, #ff3019 0%, #cf0404 100%) !important;
+  background: linear-gradient(to bottom, #ff3019 0%, #cf0404 100%) !important;
+  border: 2px solid #cf0404;
+}
+
+ul {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+div#message, div#replay, div#player {
+  display: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/*# sourceMappingURL=src/styles/styles.css.map */
