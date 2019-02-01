@@ -151,8 +151,7 @@ export default class TicTacToe {
         }, 0, 100, 400, 0.15, 0.3, subChoromosome, 0);
         let subdomain = [0,3];
         g.pushDomain(subdomain, 12);
-        //todo
-        if(subChoromosome.length - 8 == subdomain.length * g.inputCount.length)
+        if(subChoromosome.length >= subdomain.length * g.inputCount.length - 8)
             g.pushDomain(subdomain, 6);
         let de = this.defence(index);
         let val;
@@ -161,6 +160,7 @@ export default class TicTacToe {
         if(de != null){
             while(it < 5){
                 val = g.eval();
+                console.log("defense",subChoromosome, subChoromosome.length,val.inputs.toString(), val.answer);
                 if(val.answer == 1 && val.inputs.length > i && this.isMovePlayer(i + 2) && this.isMovePlayer(i + 3))
                     return [val.inputs[i + 2], val.inputs[i + 3]];
                 it++;
@@ -169,7 +169,7 @@ export default class TicTacToe {
         }
         while (true) {
             val = g.eval();
-            console.log(subChoromosome, subChoromosome.length, val.inputs.toString(), val.answer);
+            console.log("attack", subChoromosome, subChoromosome.length, val.inputs.toString(), val.answer);
             if (val.answer == 1 || val.answer == 0)
                 return [val.inputs[i], val.inputs[i + 1]];
         }

@@ -22,6 +22,7 @@ body {
   font-size: 48px;
   font-weight: bold;
   transition: 200ms;
+  text-align: center;
 }
 #game table td.you:hover {
   background: -moz-linear-gradient(top, #b7deed 0%, #71ceef 100%) 0;
@@ -40,6 +41,10 @@ div#select {
   display: flex;
   justify-content: center;
   flex-direction: row;
+}
+div#select div {
+  display: flex;
+  justify-content: center;
 }
 
 div.btn {
